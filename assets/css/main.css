@@ -1,0 +1,215 @@
+/* general */
+body {
+  direction: rtl;
+  font-family: IRANSans !important;
+  font-size: 12px !important;
+  min-height: 100vh;
+}
+
+:root {
+  /* sidebar */
+  --sidebar-bg: #71c562;
+  --sidebar-item-bg: #7bc96d;
+  --sidebar-item-bg-hover: #89c97e;
+  --sidebar-item-color: #fff;
+  --sidebar-item-bg-active: #4c8941;
+
+  --time-delay-animation: 0s;
+}
+
+ul,
+li {
+  list-style-type: none;
+}
+
+.btn {
+  font-size: 12px !important;
+}
+
+.d-ltr {
+  direction: ltr !important;
+}
+
+.text-xs {
+  font-size: 10px !important;
+}
+/* animations */
+
+.pages-fade-enter-active,
+.pages-fade-leave-active {
+  transition: opacity 0.2s;
+}
+.pages-fade-enter,
+.pages-fade-leave-active {
+  opacity: 0;
+}
+
+@keyframes moveing-fade {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-animation {
+  animation-name: 'fade-animation';
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+@keyframes fade-animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.right-to-left-animation {
+  animation-name: 'right-to-left';
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-delay: var(--time-delay-animation);
+  transform: translateX(100%);
+  animation-fill-mode: forwards;
+}
+
+.delay-animation-2 {
+  --time-delay-animation: 0.2s;
+}
+
+.delay-animation-4 {
+  --time-delay-animation: 0.4s;
+}
+
+.delay-animation-6 {
+  --time-delay-animation: 0.6s;
+}
+
+.delay-animation-8 {
+  --time-delay-animation: 0.8s;
+}
+
+.delay-animation-10 {
+  --time-delay-animation: 1s;
+}
+
+.delay-animation-12 {
+  --time-delay-animation: 1.2s;
+}
+
+.delay-animation-14 {
+  --time-delay-animation: 1.4s;
+}
+
+@keyframes right-to-left {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animation-border-color {
+  animation-name: 'change-border-color';
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-delay: 2s;
+  border: 4px solid white;
+}
+
+@keyframes change-border-color {
+  50% {
+    border-color: #ff4040;
+  }
+}
+
+/* side bar */
+.sidebar-container {
+  background-color: var(--sidebar-bg);
+  min-height: 100%;
+}
+
+.sidebar-link {
+  padding: 5px 10px;
+  width: 100% !important;
+  display: block;
+  background-color: var(--sidebar-item-bg);
+  color: var(--sidebar-item-color) !important;
+  text-decoration: none;
+}
+
+.sidebar-link:hover {
+  background-color: var(--sidebar-item-bg-hover);
+}
+
+.sidebar-axect-active {
+  border-left: 6px solid var(--sidebar-item-bg-active) !important;
+}
+
+/* head */
+.headline {
+  color: var(--bs-gray-900);
+  font-size: 13px;
+  display: inline-block;
+  border-right: 4px solid var(--sidebar-bg);
+  padding-right: 0.3rem;
+  margin-bottom: 15px;
+}
+
+.headline-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.headline-container .headline {
+  margin: 0 !important;
+}
+
+.head {
+  padding: 5px;
+  color: var(--bs-gray-900);
+  font-size: 12px !important;
+  background-color: var(--bs-gray-200);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+/* buttons */
+.btn-first {
+  --bs-btn-color: #fff !important;
+  --bs-btn-bg: var(--sidebar-bg) !important;
+  --bs-btn-hover-color: #fff !important;
+  --bs-btn-hover-bg: var(--sidebar-item-bg) !important;
+  --bs-btn-border-color: var(--sidebar-bg) !important;
+  --bs-btn-hover-border-color: var(--sidebar-bg) !important;
+  --bs-btn-active-bg: var(--sidebar-bg);
+  --bs-btn-active-color: #fff;
+}
+
+.btn-back {
+  --bs-btn-color: var(--bs-gray-600) !important;
+  --bs-btn-bg: var(--bs-gray-200) !important;
+  --bs-btn-hover-color: var(--bs-gray-700) !important;
+  --bs-btn-hover-bg: var(--bs-gray-200) !important;
+  --bs-btn-border-color: var(--bs-gray-200) !important;
+  --bs-btn-hover-border-color: var(--bs-gray-200) !important;
+  --bs-btn-active-bg: var(--bs-gray-200);
+  --bs-btn-active-color: var(--bs-gray-700);
+}
+
+/* colors */
+.text-first:not(.active) {
+  color: var(--sidebar-bg) !important;
+}
