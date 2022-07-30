@@ -17,7 +17,9 @@
                 v-for="user in customerUsers"
                 :key="user.id"
                 :value="user.id"
-              >{{ user.first_name + ' ' + user.last_name }} - {{user.email}}</option>
+              >
+                {{ user.first_name + ' ' + user.last_name }} - {{ user.email }}
+              </option>
             </select>
             <span class="text-xs text-danger">{{ errors[0] }}</span>
           </div>
@@ -53,7 +55,16 @@
           <div class="mb-3">
             <label for="name-input" class="form-label">فایل پیوست</label>
             <div>
-              <input id="name-input" @change="addFileToFormData" ref="fileInput" type="file" />
+              <input
+                id="name-input"
+                @change="addFileToFormData"
+                ref="fileInput"
+                type="file"
+                multiple
+              />
+            </div>
+            <div v-show="uploadMax" style="color: red">
+              شما بیشتر از 3 فایل نمیتوانید آپلود کنید
             </div>
             <span class="text-xs text-danger">{{ errors[0] }}</span>
           </div>
@@ -83,14 +94,15 @@ export default {
         subject: '',
         message: '',
         user: null,
-        file : null
+        file: null,
       },
+      uploadMax: false,
     }
   },
 
   computed: {
     customerUsers() {
-      return this.users.filter(user => user.role === "customer")
+      return this.users.filter((user) => user.role === 'customer')
     },
   },
 
@@ -113,8 +125,14 @@ export default {
     },
 
     addFileToFormData() {
-      this.formData.file = this.$refs.fileInput.files[0]
-    }
+      if (this.$refs.fileInput.files.length > 3) {
+        this.uploadMax = true
+      }
+      if (this.$refs.fileInput.files.length < 3) {
+        this.uploadMax = false
+        this.formData.file = this.$refs.fileInput.files[0]
+      }
+    },
   },
 }
 </script>
