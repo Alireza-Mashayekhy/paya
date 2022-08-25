@@ -44,22 +44,9 @@
         </nuxt-link>
       </li>
 
-      <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-4">
-        <nuxt-link
-          to="/seller/ticket"
-          exact-active-class="sidebar-axect-active"
-          class="sidebar-link"
-        >
-          <span class="d-block d-sm-inline-block text-center">
-            <i class="fa fa-comment-alt"></i>
-          </span>
-          <span class="ms-1 d-none d-sm-inline-block">تیکت</span>
-        </nuxt-link>
-      </li>
-
       <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-6">
         <nuxt-link
-          to="/seller/notifictions"
+          to="/seller/notifications"
           exact-active-class="sidebar-axect-active"
           class="sidebar-link"
         >
@@ -119,8 +106,9 @@ export default {
     try {
       const userInfo = await this.$axios.$get(`/usermodel/api/users/info/`)
       const countNotif = await this.$axios.$get(
-        `/seller/api/notifications/list/count-unread/`
+        `/customers/api/notifications/list/count-unread/`
       )
+      console.log(userInfo)
       this.countNotif = countNotif.count
       this.userInfo = userInfo[0]
     } catch (ex) {

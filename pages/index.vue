@@ -1,7 +1,9 @@
 <template>
   <div class="container-login">
     <div class="login-box">
-      <header class="mb-4 fs-3 text-center">فرم ورود</header>
+      <header class="mb-4 fs-3 text-center">
+        <div class="align-center">فرم ورود</div>
+      </header>
       <ValidationObserver ref="form">
         <form @submit.prevent="onSubmit">
           <!-- username -->
@@ -31,7 +33,9 @@
               <span class="text-xs text-danger">{{ errors[0] }}</span>
             </div>
           </ValidationProvider>
-          <button class="btn btn-sm btn-first">ورود</button>
+          <div class="text-center mt-4">
+            <button class="btn btn-sm btn-first mybtn">ورود</button>
+          </div>
         </form>
       </ValidationObserver>
     </div>
@@ -108,7 +112,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('/bg.jpg') !important;
+  background: linear-gradient(30deg, rgb(41, 243, 15), #338040, black);
   background-size: cover !important;
   background-position: center !important;
 }
@@ -119,7 +123,7 @@ export default {
   margin: 0 10px;
   border-radius: 4px;
   background: white;
-  padding: 60px 40px;
+  padding: 30px 40px;
   animation-name: 'moveing-fade';
   animation-duration: 1s;
   animation-iteration-count: 1;
@@ -157,5 +161,16 @@ export default {
 .errorFoot {
   direction: ltr;
   padding-top: 20px;
+}
+.form-label {
+  font-size: 15px;
+}
+.form-control {
+  border: 1px solid black;
+}
+.mybtn {
+  width: 30%;
+  font-size: 15px !important;
+  font-weight: bold;
 }
 </style>

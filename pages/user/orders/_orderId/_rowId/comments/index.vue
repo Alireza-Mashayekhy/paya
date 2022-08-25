@@ -9,13 +9,26 @@
       >
     </div>
 
-    <div class="head">{{ row.title }}</div>
+    <!-- head -->
+    <div class="head">
+      <nuxt-link :to="`/user/orders/`" class="head">لیست سفارشات</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link :to="`/user/orders/${$route.params.orderId}`" class="head"
+        >لیست ردیف ها</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>کامنت ردیف {{ $route.params.rowId }}</span>
+    </div>
+
     <div class="mb-5">
       <div v-for="comment in comments" :key="comment.id">
         <div class="d-flex mb-2" v-if="comment.role == 'expert'">
           <div class="card friend-message">
             <div class="card-header">
-              {{ comment.id }}
               ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
             </div>
             <div class="card-body">{{ comment.text }}</div>
@@ -26,18 +39,14 @@
               >
             </div>
           </div>
-          <div class="ms-1">
-            <img src="/profile2.png" class="profile-image" alt="profile" />
-          </div>
         </div>
 
         <div v-else class="card my-message mb-2">
+          <div class="card-header" style="background-color: white">
+            ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
+          </div>
           <div class="card-body">{{ comment.text }}</div>
           <div class="card-body">
-            <div class="card-header">
-              {{ comment.id }}
-              ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
-            </div>
             <nuxt-link
               :to="`/user/orders/${$route.params.orderId}/${$route.params.rowId}/comments/${comment.id}`"
               >فایل ها</nuxt-link
@@ -59,6 +68,11 @@
 
       <button class="btn btn-sm btn-first">ارسال کامنت</button>
     </form>
+    <div class="modal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">کامنت شما با موفقیت ثبت شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -81,6 +95,7 @@ export default {
   data() {
     return {
       text: '',
+      showModal: false,
     }
   },
 
@@ -93,7 +108,11 @@ export default {
           role: 'customer',
         })
         console.log(res)
-        this.$router.push(`/user/orders/${this.$route.params.orderId}/`)
+        this.showModal = true
+        setTimeout(() => {
+          location.reload()
+          this.showModal = false
+        }, '3000')
       } catch (ex) {
         console.log(ex)
         // if (ex.response.status === 400) {
@@ -129,5 +148,39 @@ export default {
 .message-box {
   min-height: 170px;
   resize: none;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
+}
+.dangerNote {
+  background-color: red;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
 }
 </style>

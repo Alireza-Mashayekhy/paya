@@ -6,29 +6,48 @@
         >بازگشت</nuxt-link
       >
     </div>
-    <div v-if="!order.close" class="mb-2">
+    <div v-for="order in orders" :key="order.id">
+      <div v-if="order.id == $route.params.orderId">
+        <div v-if="!order.closed" class="mb-2">
+          <nuxt-link
+            :to="`/seller/orders/${$route.params.customerId}/${$route.params.orderId}/new`"
+            class="btn btn-sm btn-first"
+            >ایجاد ردیف جدید</nuxt-link
+          >
+
+          <button
+            class="btn btn-sm btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#end-order"
+          >
+            پایان سفارش
+          </button>
+        </div>
+
+        <div v-else class="mb-2">
+          <button class="btn btn-sm btn-primary" @click="onOpenOrder">
+            فعال کردن سفارش
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- head -->
+    <div class="head">
+      <nuxt-link to="/seller/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
       <nuxt-link
-        :to="`/seller/orders/${$route.params.customerId}/${$route.params.orderId}/new`"
-        class="btn btn-sm btn-first"
-        >ایجاد ردیف جدید</nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/`"
+        class="head"
+        >لیست سفارشات</nuxt-link
       >
-
-      <button
-        class="btn btn-sm btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#end-order"
-      >
-        پایان سفارش
-      </button>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span class="head">لیست ردیف ها</span>
     </div>
-
-    <div v-else class="mb-2">
-      <button class="btn btn-sm btn-primary" @click="onOpenOrder">
-        فعال کردن سفارش
-      </button>
-    </div>
-
-    <div class="head">-</div>
 
     <!-- nav content -->
     <div class="table-responsive">
@@ -52,28 +71,28 @@
                 class="btn btn-sm btn-secondary"
               >
                 <span class="d-block d-sm-inline-block text-center">
-                            <i class="fa fa-pencil"></i>
-                        </span>
+                  <i class="fa fa-pencil"></i>
+                </span>
               </nuxt-link>
               <nuxt-link
                 :to="`/seller/orders/${$route.params.customerId}/${row.order}/${row.id}/comments`"
                 class="btn btn-sm btn-first"
               >
-                کامنت ها
+                <i class="fa fa-comments"></i>
               </nuxt-link>
 
               <nuxt-link
                 :to="`/seller/orders/${$route.params.customerId}/${row.order}/${row.id}/file`"
                 class="btn btn-sm btn-primary"
               >
-                فایل ها
+                <i class="fa fa-file"></i>
               </nuxt-link>
 
               <button
                 class="btn btn-sm btn-info"
                 @click="openModalMoreInfo(row)"
               >
-                نمایش بیشتر
+                <i class="fa fa-clone"></i>
               </button>
             </td>
           </tr>
@@ -83,7 +102,7 @@
     <form action="#" class="mt-3" @submit.prevent="onEditStatus">
       <div class="input-group input-group-sm">
         <span class="input-group-text">وضعیت سفارش</span>
-        <input v-model="order.status" type="text" class="form-control" />
+        <input v-model="status" type="text" class="form-control" />
         <button class="btn btn-first">ثبت</button>
       </div>
     </form>
@@ -158,6 +177,16 @@
         </div>
       </div>
     </div>
+    <div class="mymodal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">سفارش شما با موفقیت به پایان رسید.</div>
+      </div>
+    </div>
+    <div class="mymodal" v-show="showModal2">
+      <div class="succussNote">
+        <div class="succussBody">وضعیت سفارش با موفقیت ثبت شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -173,12 +202,18 @@ export default {
       const rows = await $axios.$get(
         `/experts/api/rows/list/${params.orderId}/`
       )
-      const order = await $axios.$get(
-        `/experts/api/orders/detail/${params.orderId}/`
+      const openOrders = await $axios.$get('experts/api/orders/list/active/')
+      const closeOrders = await $axios.$get('experts/api/orders/list/inactive/')
+      const users = await $axios.$get('experts/api/customers/list/')
+      const status = await $axios.$get(
+        `experts/api/orders/SeeStatus/${params.orderId}/`
       )
+      const orders = [].concat(openOrders, closeOrders)
       return {
         rows,
-        order: order[0],
+        orders,
+        users,
+        status,
       }
     } catch (ex) {
       console.log(ex)
@@ -189,6 +224,8 @@ export default {
       currentRow: {},
       loading: false,
       files: [],
+      showModal: false,
+      showModal2: false,
     }
   },
   methods: {
@@ -220,6 +257,15 @@ export default {
             closed: false,
           }
         )
+        const resp = await this.$axios.$post(
+          '/customers/api/notifications/create/',
+          {
+            customer: this.$route.params.customerId,
+            status: 'unread',
+            descriptions: `سفارش شما فعال شد`,
+          }
+        )
+        console.log(resp)
         this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
         console.log(res)
       } catch (ex) {
@@ -229,13 +275,25 @@ export default {
 
     async onEditStatus() {
       try {
-        const res = await this.$axios.$patch(
-          `/experts/api/orders/update/${this.$route.params.orderId}/`,
+        const res = await this.$axios.$post(`/experts/api/orders/getStatus/`, {
+          status: this.status,
+          id: this.$route.params.orderId,
+        })
+        console.log(res)
+        this.showModal2 = true
+        setTimeout(() => {
+          this.showModal2 = false
+          location.reload()
+        }, '3000')
+        const resp = await this.$axios.$post(
+          '/customers/api/notifications/create/',
           {
-            status: this.order.status,
+            customer: this.$route.params.customerId,
+            status: 'unread',
+            descriptions: `وضعیت جدیدی برای سفارش شما ثبت شد`,
           }
         )
-        console.log(res)
+        console.log(resp)
       } catch (ex) {
         console.log(ex)
       }
@@ -258,7 +316,20 @@ export default {
             }
           )
           console.log(res)
-          this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
+          const resp = await this.$axios.$post(
+            '/customers/api/notifications/create/',
+            {
+              customer: this.$route.params.customerId,
+              status: 'unread',
+              descriptions: `سفارش شما به پایان رسید `,
+            }
+          )
+          console.log(resp)
+          this.showModal = true
+          setTimeout(() => {
+            this.showModal = false
+            this.$router.push(`/seller/orders/${this.$route.params.customerId}`)
+          }, '3000')
         } catch (ex) {}
       }
 
@@ -302,5 +373,30 @@ export default {
 .message-box {
   min-height: 170px;
   resize: none;
+}
+.mymodal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
 }
 </style>

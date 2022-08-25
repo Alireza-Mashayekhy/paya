@@ -1,13 +1,20 @@
 <template>
   <div>
     <div class="headline-container mb-5">
-      <div class="headline">لیست سفارشات</div> 
+      <div class="headline">لیست سفارشات</div>
       <nuxt-link to="/admin/orders" class="btn btn-sm btn-back"
         >بازگشت</nuxt-link
       >
     </div>
 
-    <!-- <div class="head">علیرضا</div> -->
+    <!-- head -->
+    <div class="head">
+      <nuxt-link to="/admin/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>لیست سفارشات</span>
+    </div>
 
     <!-- nav -->
     <ul class="nav nav-tabs mb-5">
@@ -57,16 +64,16 @@
                 <td>{{ order.number }}</td>
                 <td>{{ getDate(order.date) }}</td>
                 <td>{{ expertName }}</td>
-                <td>{{ order.status }}</td>
+                <td>{{ order.status1 }}</td>
 
                 <td>
                   <nuxt-link
                     :to="`/admin/orders/${order.customer}/${order.id}`"
                     class="btn btn-sm btn-first"
                   >
-                     <span class="d-block d-sm-inline-block text-center">
-                        <i class="fa fa-cogs"></i>
-                      </span>
+                    <span class="d-block d-sm-inline-block text-center">
+                      <i class="fa fa-cogs"></i>
+                    </span>
                   </nuxt-link>
                 </td>
               </tr>
@@ -97,7 +104,7 @@
                 <td>{{ order.number }}</td>
                 <td>{{ getDate(order.date) }}</td>
                 <td>{{ order.expert }}</td>
-                <td>{{ order.status }}</td>
+                <td>{{ order.status1 }}</td>
 
                 <td>
                   <nuxt-link
@@ -132,10 +139,10 @@ export default {
   layout: 'admin',
   async asyncData({ $axios }) {
     const orders = await $axios.$get('managers/api/orders/list/')
-    const users = await $axios.$get("managers/api/users/list/")
+    const users = await $axios.$get('managers/api/users/list/')
     return {
       orders,
-      users
+      users,
     }
   },
 
@@ -148,7 +155,9 @@ export default {
     },
 
     expertName() {
-      const expert = this.users.filter(u => u.id === this.customerOrdersOpened[0].expert)[0]
+      const expert = this.users.filter(
+        (u) => u.id === this.customerOrdersOpened[0].expert
+      )[0]
       return expert.first_name + ' ' + expert.last_name
     },
 

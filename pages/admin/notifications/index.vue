@@ -87,8 +87,8 @@
 import moment from 'jalali-moment'
 
 export default {
-  name: 'UserPageNotifictions',
-  layout: 'user',
+  name: 'adminPageNotifictions',
+  layout: 'admin',
 
   async asyncData({ $axios }) {
     const readedNotif = await $axios.$get(

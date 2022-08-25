@@ -7,17 +7,22 @@
       >
     </div>
 
+    <!-- head -->
+    <div class="head">
+      <nuxt-link to="/seller/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span class="head">لیست سفارشات</span>
+    </div>
     <div class="d-flex mb-2">
-
-      <input 
+      <input
         type="search"
         v-model="userNamesFilter"
         placeholder="جستجو در سفارشات"
         class="form-control form-control-sm filter-input"
       />
     </div>
-
-    <!-- <div class="head">علیرضا</div> -->
 
     <!-- nav -->
     <ul class="nav nav-tabs mb-5">
@@ -62,7 +67,7 @@
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ order.number }}</td>
                 <td>{{ getDate(order.date) }}</td>
-                <td>{{ order.status }}</td>
+                <td>{{ order.status1 }}</td>
                 <td>
                   <nuxt-link
                     :to="`/seller/orders/${order.customer}/${order.id}`"
@@ -96,7 +101,7 @@
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ order.number }}</td>
                 <td>{{ getDate(order.date) }}</td>
-                <td>{{ order.status }}</td>
+                <td>{{ order.status1 }}</td>
                 <td>
                   <nuxt-link
                     :to="`/seller/orders/${order.customer}/${order.id}/factor`"
@@ -131,7 +136,7 @@ export default {
   layout: 'seller',
   data() {
     return {
-      userNamesFilter : ''
+      userNamesFilter: '',
     }
   },
 
@@ -152,13 +157,17 @@ export default {
 
   computed: {
     filteredOpenOrders() {
-      return this.openOrders.filter(o => o.number.includes(this.userNamesFilter))
+      return this.openOrders.filter((o) =>
+        o.number.includes(this.userNamesFilter)
+      )
     },
 
     filteredCloseOrders() {
-      return this.closeOrders.filter(o => o.number.includes(this.userNamesFilter))
-    }
-  }
+      return this.closeOrders.filter((o) =>
+        o.number.includes(this.userNamesFilter)
+      )
+    },
+  },
 }
 </script>
 

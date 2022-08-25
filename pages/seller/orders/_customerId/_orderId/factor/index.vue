@@ -9,13 +9,36 @@
       >
     </div>
 
-    <!-- <div class="head">{{ order.title }}</div> -->
+    <!-- head -->
+    <div class="head">
+      <nuxt-link to="/seller/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/`"
+        class="head"
+        >لیست سفارشات</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/${$route.params.orderId}`"
+        class="head"
+        >لیست ردیف ها</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>فاکتور سفارش {{ $route.params.orderId }}</span>
+    </div>
 
     <div>
       <ul class="list-group mb-3">
         <li class="list-group-item">
           <div class="d-flex justify-content-between">
-            <a :href="files.file" target="_blank"> فاکتور نهایی </a>
+            <!-- <a :href="files.file" target="_blank"> فاکتور نهایی </a> -->
           </div>
         </li>
       </ul>
@@ -35,20 +58,20 @@
 export default {
   name: 'AdminPageConnectUserSeller',
   layout: 'seller',
-  async asyncData({ $axios, params }) {
-    try {
-      const files = await $axios.$get(
-        `/experts/api/orders/file/detail/${params.orderId}/`
-      )
-      // const order = await $axios.$get(
-      //   `/experts/api/rows/detail/${params.orderId}/`
-      // )
-      return {
-        files,
-        // order: order[0],
-      }
-    } catch {}
-  },
+  // async asyncData({ $axios, params }) {
+  //   try {
+  //     const files = await $axios.$get(
+  //       `/experts/api/orders/file/detail/${params.orderId}/`
+  //     )
+  //     // const order = await $axios.$get(
+  //     //   `/experts/api/rows/detail/${params.orderId}/`
+  //     // )
+  //     return {
+  //       files,
+  //       // order: order[0],
+  //     }
+  //   } catch {}
+  // },
   methods: {
     async onSubmit() {
       const bodyFormData = new FormData()

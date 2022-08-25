@@ -52,8 +52,8 @@
                     class="btn btn-sm btn-first"
                   >
                     <span class="d-block d-sm-inline-block text-center">
-                        <i class="fa fa-cogs"></i>
-                      </span>ردیف ها
+                      <i class="fa fa-cogs"></i> </span
+                    >ردیف ها
                   </nuxt-link>
                 </td>
               </tr>
@@ -95,8 +95,8 @@
                     class="btn btn-sm btn-first"
                   >
                     <span class="d-block d-sm-inline-block text-center">
-                        <i class="fa fa-cogs"></i>
-                      </span>
+                      <i class="fa fa-cogs"></i>
+                    </span>
                   </nuxt-link>
                 </td>
               </tr>

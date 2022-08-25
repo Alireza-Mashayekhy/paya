@@ -35,7 +35,6 @@
             <th scope="col">نام و نام خانوادگی</th>
             <th scope="col">کشور</th>
             <th scope="col">دسترسی</th>
-            <th scope="col">کارشناس</th>
             <th scope="col">عملیات</th>
           </tr>
         </thead>
@@ -45,10 +44,9 @@
             <td>{{ user.first_name + ' ' + user.last_name }}</td>
             <th scope="col">{{ user.country }}</th>
             <td>{{ getRole(user.role) }}</td>
-            <td>{{ user.role == 'customer' ? user.expert : '-' }}</td>
             <td class="d-flex justify-content-center gap-2">
               <nuxt-link
-                :to="`/admin/users/profile/${user.id}`"
+                :to="`/admin/users/profile/${index + 1}`"
                 class="btn btn-sm btn-info"
               >
                 <span class="d-block d-sm-inline-block text-center">
@@ -56,7 +54,7 @@
                 </span>
               </nuxt-link>
               <nuxt-link
-                :to="`/admin/users/${user.id}`"
+                :to="`/admin/users/${index + 1}`"
                 class="btn btn-sm btn-first"
               >
                 <span class="d-block d-sm-inline-block text-center">
@@ -100,6 +98,7 @@ export default {
   data() {
     return {
       showModal: false,
+      showModal2: false,
       countryFilter: '',
       userNamesFilter: '',
       idToDelete: null,

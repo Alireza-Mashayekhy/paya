@@ -44,7 +44,7 @@
               </nuxt-link>
               <button
                 class="btn btn-sm btn-danger"
-                @click="readyToDelete(lastusers.id)"
+                @click="beforReadyToDelete(user.id)"
               >
                 <span class="d-block d-sm-inline-block text-center">
                   <i class="fa fa-trash"></i>
@@ -55,6 +55,11 @@
         </tbody>
       </table>
     </div>
+    <WarnModalOrders
+      v-if="showModal2"
+      @closeModal="showModal2 = false"
+      :userId="idToDelete"
+    />
   </div>
 </template>
 
@@ -66,16 +71,20 @@ export default {
   data() {
     return {
       showModal: false,
+      showModal2: false,
       idToDelete: null,
       userNamesFilter: '',
       countryFilter: '',
+      deletOrders: '',
     }
   },
   async asyncData({ $axios }) {
     const users = await $axios.$get('managers/api/users/list/')
+    const orders = await $axios.$get('managers/api/orders/list/')
     console.log(users)
     return {
       users,
+      orders,
     }
   },
   computed: {
@@ -115,9 +124,11 @@ export default {
     },
   },
   methods: {
-    readyToDelete(userId) {
-      this.showModal = true
-      this.idToDelete = userId
+    beforReadyToDelete(userId) {
+      const order = this.orders.filter((o) => o.customer === userId)
+      const order2 = order.filter((o) => o.closed === false)
+      this.showModal2 = true
+      this.idToDelete = order2
     },
   },
 }

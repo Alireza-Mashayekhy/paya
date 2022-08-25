@@ -9,7 +9,7 @@
             <label for="role-input" class="form-label">مشتری</label>
             <select
               id="role-input"
-              v-model="formData.user"
+              v-model="formData.customer"
               class="form-select form-select-sm"
             >
               <option selected>...</option>
@@ -73,6 +73,11 @@
         <button class="btn btn-sm btn-first">ارسال ایمیل</button>
       </form>
     </ValidationObserver>
+    <div class="modal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">ایمیل شما با موفقیت ارسال شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -93,10 +98,11 @@ export default {
       formData: {
         subject: '',
         message: '',
-        user: null,
-        file: null,
+        customer: null,
       },
+      file: null,
       uploadMax: false,
+      showModal: false,
     }
   },
 
@@ -109,13 +115,21 @@ export default {
   methods: {
     async onSubmit() {
       try {
+        const bodyFormData = new FormData()
+        for (const property in this.formData) {
+          bodyFormData.append(property, this.formData[property])
+        }
+        bodyFormData.append('file1', this.$refs.fileInput.files[0])
         const res = await this.$axios.$post(
           `managers/api/emails/create/`,
-          this.formData
+          bodyFormData
         )
         console.log(res)
-        alert('ایمیل شما با موفقیت ارسال شد')
-        this.$router.push('/admin/')
+        this.showModal = true
+        setTimeout(() => {
+          this.showModal = false
+          this.$router.push('/admin/')
+        }, '3000')
       } catch (ex) {
         console.log(ex)
         if (ex.response.status === 400) {
@@ -161,5 +175,30 @@ export default {
 .message-box {
   min-height: 170px;
   resize: none;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
 }
 </style>

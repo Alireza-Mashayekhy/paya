@@ -10,30 +10,30 @@
       <div class="detail">
         <label>نام :</label>
         <div v-if="user[0].first_name == null">وارد نشده</div>
-        <div v-else>{{ user[0].first_name }}</div>
+        <div v-else>{{ user[$route.params.id - 1].first_name }}</div>
         <label>نام خانوادگی :</label>
         <div v-if="user[0].last_name == null">وارد نشده</div>
-        <div v-else>{{ user[0].last_name }}</div>
+        <div v-else>{{ user[$route.params.id - 1].last_name }}</div>
         <label>ایمیل :</label>
         <div v-if="user[0].email == null">وارد نشده</div>
-        <div v-else>{{ user[0].email }}</div>
+        <div v-else>{{ user[$route.params.id - 1].email }}</div>
         <label>کشور :</label>
         <div v-if="user[0].country == null">وارد نشده</div>
-        <div v-else>{{ user[0].country }}</div>
+        <div v-else>{{ user[$route.params.id - 1].country }}</div>
         <label>شماره :</label>
         <div v-if="user[0].phone == null">وارد نشده</div>
-        <div v-else>{{ user[0].phone }}</div>
+        <div v-else>{{ user[$route.params.id - 1].phone }}</div>
         <label>کمپانی :</label>
         <div v-if="user[0].company == null">وارد نشده</div>
-        <div v-else>{{ user[0].company }}</div>
+        <div v-else>{{ user[$route.params.id - 1].company }}</div>
         <label>نقش :</label>
         <div v-if="user[0].role == null">وارد نشده</div>
-        <div v-else>{{ user[0].role }}</div>
+        <div v-else>{{ user[$route.params.id - 1].role }}</div>
       </div>
       <div>
-        <div class="pic">
+        <div class="sidebar-profile mb-2 animation-border-color pic">
           <img
-            :src="user.image || '/profile2.png'"
+            :src="user[$route.params.id - 1].image || '/profile2.png'"
             class="sidebar-profile-image"
             alt="profile"
           />
@@ -65,6 +65,12 @@ export default {
 .detail {
   display: grid;
   grid-template-columns: 100px 100px;
+}
+.pic {
+  width: 200px;
+}
+.pic img {
+  width: 100%;
 }
 @media only screen and (max-width: 1000px) and (min-width: 400px) {
   .details {

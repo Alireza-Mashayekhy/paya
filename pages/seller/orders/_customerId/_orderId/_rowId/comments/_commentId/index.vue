@@ -9,7 +9,38 @@
       >
     </div>
 
-    <div class="head">-</div>
+    <!-- head -->
+    <div class="head">
+      <nuxt-link to="/seller/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/`"
+        class="head"
+        >لیست سفارشات</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/${$route.params.orderId}`"
+        class="head"
+        >لیست ردیف ها</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link
+        :to="`/seller/orders/${$route.params.customerId}/${$route.params.orderId}/${$route.params.rowId}/comments/`"
+        class="head"
+        >کامنت ردیف {{ $route.params.rowId }}</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>فایل شماره {{ $route.params.commentId }}</span>
+    </div>
 
     <div>
       <ul class="list-group mb-3">
@@ -36,11 +67,14 @@
       </div>
 
       <button class="btn btn-sm btn-first">
-        <span class="d-block d-sm-inline-block text-center">
-            <i class="fa fa-plus"></i>
-          </span>
+        <span class="d-block d-sm-inline-block text-center"> ارسال فایل </span>
       </button>
     </form>
+    <div class="myModal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">فایل با موفقیت ثبت شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -56,6 +90,11 @@ export default {
     return {
       files,
       // row: row[0],
+    }
+  },
+  data() {
+    return {
+      showModal: false,
     }
   },
 
@@ -76,9 +115,13 @@ export default {
           }
         )
         console.log(res)
-        this.$router.push(
-          `/seller/orders/${this.$route.params.customerId}/${this.$route.params.orderId}/${this.$route.params.rowId}/comments`
-        )
+        this.showModal = true
+        setTimeout(() => {
+          this.showModal = false
+          this.$router.push(
+            `/seller/orders/${this.$route.params.customerId}/${this.$route.params.orderId}/${this.$route.params.rowId}/comments`
+          )
+        }, '3000')
       } catch (ex) {
         console.log(ex)
       }
@@ -106,5 +149,30 @@ export default {
 .message-box {
   min-height: 170px;
   resize: none;
+}
+.myModal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
 }
 </style>

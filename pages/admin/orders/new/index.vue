@@ -18,7 +18,7 @@
                 :key="user.id"
                 :value="user.id"
               >
-                {{ user.first_name + ' ' + user.last_name }} - {{user.email}}
+                {{ user.first_name + ' ' + user.last_name }} - {{ user.email }}
               </option>
             </select>
             <span class="text-xs text-danger">{{ errors[0] }}</span>
@@ -62,12 +62,15 @@
         </ValidationProvider>
 
         <button class="btn btn-sm btn-first">
-          <span class="d-block d-sm-inline-block text-center">
-            <i class="fa fa-plus"></i>
-          </span>
+          <span class="d-block d-sm-inline-block text-center"> افزودن </span>
         </button>
       </form>
     </ValidationObserver>
+    <div class="modal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">سفارش شما با موفقیت ثبت شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -84,6 +87,7 @@ export default {
 
   data() {
     return {
+      showModal: false,
       formData: {
         customer: '',
         number: '',
@@ -112,7 +116,30 @@ export default {
           `managers/api/orders/create/`,
           this.formData
         )
+        this.showModal = true
+        setTimeout(() => {
+          this.showModal = false
+          this.$router.push(`/admin/orders/${this.formData.customer}`)
+        }, '3000')
         console.log(res)
+        const resp = await this.$axios.$post(
+          '/customers/api/notifications/create/',
+          {
+            customer: this.expert,
+            status: 'unread',
+            descriptions: `شما سفارشی با مشتری شماره ${this.formData.customer} دارید`,
+          }
+        )
+        console.log(resp)
+        const resp2 = await this.$axios.$post(
+          '/customers/api/notifications/create/',
+          {
+            customer: this.customer,
+            status: 'unread',
+            descriptions: `شما سفارشی با مشتری شماره  ${this.formData.expert} دارید`,
+          }
+        )
+        console.log(resp2)
       } catch (ex) {
         console.log(ex)
         if (ex.response.status === 400) {
@@ -123,3 +150,30 @@ export default {
   },
 }
 </script>
+<style scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
+}
+</style>

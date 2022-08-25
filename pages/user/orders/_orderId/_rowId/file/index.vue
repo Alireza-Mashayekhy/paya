@@ -9,7 +9,20 @@
       >
     </div>
 
-    <div class="head">{{ row.title }}</div>
+    <!-- head -->
+    <div class="head">
+      <nuxt-link :to="`/user/orders/`" class="head">لیست سفارشات</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link :to="`/user/orders/${$route.params.orderId}`" class="head"
+        >لیست ردیف ها</nuxt-link
+      >
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>فایل ردیف {{ $route.params.rowId }}</span>
+    </div>
 
     <div>
       <ul class="list-group mb-3">

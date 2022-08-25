@@ -8,34 +8,41 @@
         >بازگشت</nuxt-link
       >
     </div>
+    <div v-for="o in order" :key="o.id">
+      <div v-if="o.id == $route.params.orderId">
+        <div v-if="!o.closed" class="mb-2">
+          <nuxt-link
+            :to="`/admin/orders/${$route.params.customerId}/${$route.params.orderId}/new`"
+            class="btn btn-sm btn-first"
+            >ایجاد ردیف جدید</nuxt-link
+          >
 
-    <div v-if="!order.closed" class="mb-2">
-      <nuxt-link
-        :to="`/admin/orders/${$route.params.customerId}/${$route.params.orderId}/new`"
-        class="btn btn-sm btn-first"
-        >ایجاد ردیف جدید</nuxt-link
-      >
+          <button class="btn btn-sm btn-primary" @click="showModal = true">
+            پایان سفارش
+          </button>
+        </div>
 
-      <button
-        class="btn btn-sm btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#end-order"
-      >
-        پایان سفارش
-      </button>
+        <div v-else class="mb-2">
+          <button class="btn btn-sm btn-primary" @click="showModal2 = true">
+            فعال کردن سفارش
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div v-else class="mb-2">
-      <button
-        class="btn btn-sm btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#open-order"
+    <div class="head">
+      <nuxt-link to="/admin/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <nuxt-link :to="`/admin/orders/${$route.params.customerId}/`" class="head"
+        >لیست سفارشات</nuxt-link
       >
-        فعال کردن سفارش
-      </button>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>لیست ردیف ها</span>
     </div>
-
-    <div class="head">-</div>
 
     <!-- nav content -->
     <div class="table-responsive">
@@ -70,13 +77,13 @@
                 :to="`/admin/orders/${$route.params.customerId}/${row.order}/${row.id}/comments`"
                 class="btn btn-sm btn-first"
               >
-                کامنت ها
+                <i class="fa fa-comments"></i>
               </nuxt-link>
               <nuxt-link
                 :to="`/admin/orders/${$route.params.customerId}/${row.order}/${row.id}/file`"
                 class="btn btn-sm btn-primary"
               >
-                فایل ها
+                <i class="fa fa-file"></i>
               </nuxt-link>
             </td>
           </tr>
@@ -84,47 +91,38 @@
       </table>
     </div>
     <!-- modal -->
-    <div id="end-order" class="modal fade" tabindex="-1">
-      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">پایان سفارش</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+    <div class="modal" v-show="showModal">
+      <div class="loginError">
+        <div class="errorHead d-flex">
+          <h5 class="modal-title">پایان سفارش</h5>
+        </div>
+        <div class="errorBody">
+          <div class="mb-3">
+            <label for="file-end-order">فاکتور نهایی</label>
+            <input id="file-end-order" ref="factorFile" type="file" />
+            <p v-show="showThisError" style="color: red">
+              پرکردن فایل الزامیست
+            </p>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="file-end-order">فاکتور نهایی</label>
-              <input id="file-end-order" ref="factorFile" type="file" />
-            </div>
-            <div>
-              <button class="btn btn-sm btn-back" data-bs-dismiss="modal">
-                لغو
-              </button>
-              <button class="btn btn-sm btn-first" @click="onEndOrder">
-                مختومه
-              </button>
-            </div>
-          </div>
+        </div>
+        <div class="errorFoot">
+          <button class="btn btn-sm btn-back" @click="showModal = false">
+            لغو
+          </button>
+          <button class="btn btn-sm btn-first" @click="onEndOrder" ref="">
+            مختومه
+          </button>
         </div>
       </div>
     </div>
 
     <!-- modal -->
-    <div id="open-order" class="modal fade" tabindex="-1">
-      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">فعال کردن سفارش</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
+    <div class="modal" v-show="showModal2">
+      <div class="loginError">
+        <div class="errorHead">
+          <h5 class="modal-title">فعال کردن سفارش</h5>
+        </div>
+        <div class="errorBody">
           <div class="modal-body">
             <div>
               <button class="btn btn-sm btn-back" data-bs-dismiss="modal">
@@ -140,44 +138,55 @@
     </div>
 
     <!-- modal -->
-    <div id="moreInfo" class="modal fade" tabindex="-1">
-      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">ردیف یک</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <dl class="row">
-              <dt class="col-sm-3">تاریخ</dt>
-              <dd class="col-sm-9">{{ getDate(currentRow.date) }}</dd>
-
-              <dt class="col-sm-3">شرح خدمات</dt>
-              <dd class="col-sm-9">{{ currentRow.title }}</dd>
-
-              <dt class="col-sm-3">توضیحات</dt>
-              <dd class="col-sm-9">{{ currentRow.descriptions }}</dd>
-
-              <dt class="col-sm-3">فایل ها</dt>
-              <dd class="col-sm-9">
-                <div
-                  :class="{ 'spinner-border spinner-border-sm': loading }"
-                ></div>
-                <a
-                  v-for="(file, index) in files"
-                  :key="file.id"
-                  :href="file.file"
-                  target="_blank"
-                  >فایل {{ index + 1 }}</a
-                >
-              </dd>
-            </dl>
-          </div>
+    <div class="modal" v-show="showModal3">
+      <div class="loginError">
+        <div class="errorHead">
+          <h5 class="modal-title">ردیف یک</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
         </div>
+        <div class="errorBody">
+          <dl class="row">
+            <dt class="col-sm-3">تاریخ</dt>
+            <dd class="col-sm-9">{{ getDate(currentRow.date) }}</dd>
+
+            <dt class="col-sm-3">شرح خدمات</dt>
+            <dd class="col-sm-9">{{ currentRow.title }}</dd>
+
+            <dt class="col-sm-3">توضیحات</dt>
+            <dd class="col-sm-9">{{ currentRow.descriptions }}</dd>
+
+            <dt class="col-sm-3">فایل ها</dt>
+            <dd class="col-sm-9">
+              <div
+                :class="{ 'spinner-border spinner-border-sm': loading }"
+              ></div>
+              <a
+                v-for="(file, index) in files"
+                :key="file.id"
+                :href="file.file"
+                target="_blank"
+                >فایل {{ index + 1 }}</a
+              >
+            </dd>
+          </dl>
+        </div>
+        <div class="errorFoot">
+          <button class="btn btn-danger">بستن</button>
+        </div>
+      </div>
+    </div>
+    <div class="succussModal" v-show="showModal4">
+      <div class="succussNote">
+        <div class="succussBody">سفارش شما با موفقیت به پایان رسید.</div>
+      </div>
+    </div>
+    <div class="succussModal" v-show="showModal5">
+      <div class="succussNote">
+        <div class="succussBody">سفارش شما با موفقیت فعال شد.</div>
       </div>
     </div>
   </div>
@@ -195,15 +204,25 @@ export default {
     const order = await $axios.$get(
       `/managers/api/orders/detail/${params.orderId}/`
     )
+    const users = await $axios.$get(
+      `managers/api/users/detail/${params.customerId}/`
+    )
     // console.log('orders ', order)
     return {
       rows,
       order,
+      users,
     }
   },
 
   data() {
     return {
+      showModal: false,
+      showModal2: false,
+      showModal3: false,
+      showModal4: false,
+      showModal5: false,
+      showThisError: false,
       currentRow: {},
       loading: false,
       files: [],
@@ -242,20 +261,35 @@ export default {
             }
           )
           console.log(res)
-          this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
+          const resp = await this.$axios.$post(
+            '/customers/api/notifications/create/',
+            {
+              customer: this.$route.params.customerId,
+              status: 'unread',
+              descriptions: `سفارش شما به پایان رسید`,
+            }
+          )
+          console.log(resp)
+          this.showModal = false
+          this.showModal4 = true
+          setTimeout(() => {
+            this.showModal4 = false
+            this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
+          }, '3000')
         } catch (ex) {}
-      }
-
-      try {
-        const res = await this.$axios.$patch(
-          `/managers/api/orders/update/${this.$route.params.orderId}/`,
-          {
-            closed: true,
-          }
-        )
-        console.log(res)
-      } catch (ex) {
-        console.log(ex)
+        try {
+          const res = await this.$axios.$patch(
+            `/managers/api/orders/update/${this.$route.params.orderId}/`,
+            {
+              closed: true,
+            }
+          )
+          console.log(res)
+        } catch (ex) {
+          console.log(ex)
+        }
+      } else {
+        this.showThisError = true
       }
     },
 
@@ -267,7 +301,22 @@ export default {
             closed: false,
           }
         )
-        this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
+        const resp = await this.$axios.$post(
+          '/customers/api/notifications/create/',
+          {
+            customer: this.$route.params.customerId,
+            status: 'unread',
+            descriptions: `سفارش شما فعال شد`,
+          }
+        )
+        console.log(resp)
+        this.showModal2 = false
+        this.showModal5 = true
+        setTimeout(() => {
+          this.showModal5 = false
+          this.$router.push(`/admin/orders/${this.$route.params.customerId}`)
+        }, '3000')
+
         console.log(res)
       } catch (ex) {
         console.log(ex)
@@ -326,5 +375,63 @@ export default {
   max-width: 200px;
   overflow: hidden;
   overflow-wrap: break-word;
+}
+.succussModal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #000000da;
+  z-index: 10;
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #000000da;
+}
+.loginError {
+  background-color: white;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.errorHead {
+  border-bottom: 1px solid #acacac;
+  padding-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.errorBody {
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
+}
+.errorFoot {
+  padding-top: 20px;
 }
 </style>

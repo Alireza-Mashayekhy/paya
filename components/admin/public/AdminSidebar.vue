@@ -13,6 +13,7 @@
             />
           </div>
         </div>
+
         <p class="d-none d-sm-block">
           {{ userInfo.first_name + ' ' + userInfo.last_name }}
         </p>
@@ -44,21 +45,6 @@
         </nuxt-link>
       </li>
 
-      <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-4">
-        <nuxt-link
-          to="/admin/connect-user-seller"
-          exact-active-class="sidebar-axect-active"
-          class="sidebar-link"
-        >
-          <span class="d-block d-sm-inline-block text-center">
-            <i class="fa fa-link"></i>
-          </span>
-          <span class="ms-1 d-none d-sm-inline-block"
-            >اتصال مشتری به کارشناس</span
-          >
-        </nuxt-link>
-      </li>
-
       <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-6">
         <nuxt-link
           to="/admin/orders/"
@@ -85,22 +71,9 @@
         </nuxt-link>
       </li>
 
-      <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-10">
-        <nuxt-link
-          to="/admin/ticket"
-          exact-active-class="sidebar-axect-active"
-          class="sidebar-link"
-        >
-          <span class="d-block d-sm-inline-block text-center">
-            <i class="fa fa-comment-alt"></i>
-          </span>
-          <span class="ms-1 d-none d-sm-inline-block">تیکت</span>
-        </nuxt-link>
-      </li>
-
       <li class="py-1 px-2 w-100 right-to-left-animation delay-animation-6">
         <nuxt-link
-          to="/seller/notifictions"
+          to="/admin/notifications"
           exact-active-class="sidebar-axect-active"
           class="sidebar-link"
         >

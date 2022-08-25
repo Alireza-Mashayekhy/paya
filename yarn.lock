@@ -3180,6 +3180,11 @@
 "console-control-strings@^1.1.0":
   "version" "1.1.0"
 
+"console@^0.7.2":
+  "integrity" "sha512-+JSDwGunA4MTEgAV/4VBKwUHonP8CzJ/6GIuwPi6acKFqFfHUdSGCm89ZxZ5FfGWdZfkdgAroy5bJ5FSeN/t4g=="
+  "resolved" "https://registry.npmjs.org/console/-/console-0.7.2.tgz"
+  "version" "0.7.2"
+
 "consolidate@^0.15.1":
   "integrity" "sha512-DW46nrsMJgy9kqAbPt5rKaCr7uFtpo4mSUvLHIUbJEjm0vo+aY5QLwBUq3FK4tRnJr/X0Psc0C4jf/h+HtXSMw=="
   "resolved" "https://registry.npmjs.org/consolidate/-/consolidate-0.15.1.tgz"

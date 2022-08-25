@@ -80,6 +80,11 @@
         </div>
       </div>
     </div>
+    <div class="mymodal" v-show="showModal">
+      <div class="succussNote">
+        <div class="succussBody">پیام شما با موفقیت دیده شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,7 +93,7 @@ import moment from 'jalali-moment'
 
 export default {
   name: 'UserPageNotifictions',
-  layout: 'user',
+  layout: 'seller',
 
   async asyncData({ $axios }) {
     const readedNotif = await $axios.$get(
@@ -100,6 +105,11 @@ export default {
     return {
       readedNotif,
       unreadNotif,
+    }
+  },
+  data() {
+    return {
+      showModal: false,
     }
   },
 
@@ -116,6 +126,11 @@ export default {
             status: 'read',
           }
         )
+        this.showModal = true
+        setTimeout(() => {
+          this.showModal = false
+          location.reload()
+        }, '3000')
         console.log(res)
       } catch (ex) {
         console.log(ex)
@@ -149,5 +164,30 @@ export default {
 .message-box {
   min-height: 170px;
   resize: none;
+}
+.mymodal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(42, 48, 56, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
 }
 </style>

@@ -7,13 +7,21 @@
       >
     </div>
 
+    <!-- head -->
+    <div class="head">
+      <nuxt-link :to="`/user/orders/`" class="head">لیست سفارشات</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span class="head">لیست ردیف ها</span>
+    </div>
+
     <div class="table-responsive">
       <table class="table table-sm table-bordered text-center align-middle">
         <thead class="text-nowrap">
           <tr>
             <th scope="col">#</th>
             <th scope="col">تاریخ</th>
-            <th scope="col">کارشناس</th>
             <th scope="col">شرح خدمات</th>
             <th scope="col">عملیات</th>
           </tr>
@@ -22,24 +30,23 @@
           <tr v-for="(row, index) in rows" :key="row.id">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ getDate(row.date) }}</td>
-            <td></td>
             <td>{{ row.title }}</td>
             <td>
               <nuxt-link
                 :to="`/user/orders/${row.order}/${row.id}/file`"
                 class="btn btn-sm btn-primary"
               >
-                فایل ها
+                <i class="fa fa-file"></i>
               </nuxt-link>
               <nuxt-link
                 :to="`/user/orders/${row.order}/${row.id}/comments`"
                 class="btn btn-sm btn-first"
               >
-                کامنت ها
+                <i class="fa fa-comment"></i>
               </nuxt-link>
 
               <button class="btn btn-sm btn-info" @click="openModal(row)">
-                نمایش بیشتر
+                <i class="fa fa-clone"></i>
               </button>
             </td>
           </tr>
@@ -102,13 +109,12 @@ export default {
     const rows = await $axios.$get(
       `/customers/api/rows/list/${params.orderId}/`
     )
-
-    const order = await $axios.$get(
-      `/customers/api/orders/detail/${params.orderId}/`
-    )
+    const openOrders = await $axios.$get('customers/api/orders/list/active/')
+    const closeOrders = await $axios.$get('customers/api/orders/list/inactive/')
     return {
       rows,
-      order,
+      openOrders,
+      closeOrders,
     }
   },
 

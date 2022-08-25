@@ -15,7 +15,7 @@
       <ul class="list-group mb-3">
         <li class="list-group-item">
           <div class="d-flex justify-content-between">
-            <a :href="files.file" target="_blank"> فاکتور </a>
+            <a :href="files[0].file" target="_blank"> فاکتور </a>
           </div>
         </li>
       </ul>
