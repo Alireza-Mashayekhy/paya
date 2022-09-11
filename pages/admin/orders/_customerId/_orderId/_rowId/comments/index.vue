@@ -38,7 +38,25 @@
           <div class="card friend-message">
             <div class="card-header">
               {{ comment.id }}
-              ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
+              ({{ مشتری }}) ({{ comment.date.split('T')[0] }})
+              <div style="float: left">
+                <button
+                  class="btn btn-sm btn-success"
+                  @click="beforReadyToEdit(comment.id)"
+                >
+                  <span class="d-block d-sm-inline-block text-center">
+                    <i class="fa fa-pen"></i>
+                  </span>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="beforReadyToDelete(comment.id)"
+                >
+                  <span class="d-block d-sm-inline-block text-center">
+                    <i class="fa fa-trash"></i>
+                  </span>
+                </button>
+              </div>
             </div>
             <div class="card-body">{{ comment.text }}</div>
             <div class="card-body">
@@ -54,9 +72,51 @@
         </div>
 
         <div v-else class="card my-message mb-2">
-          <div class="card-header">
+          <div class="card-header" v-if="comment.role == 'expert'">
             {{ comment.id }}
-            ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
+            ( کارشناس ) ({{ comment.date.split('T')[0] }})
+            <div style="float: left">
+              <div style="float: left">
+                <button
+                  class="btn btn-sm btn-success"
+                  @click="beforReadyToEdit(comment.id)"
+                >
+                  <span class="d-block d-sm-inline-block text-center">
+                    <i class="fa fa-pen"></i>
+                  </span>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="beforReadyToDelete(comment.id)"
+                >
+                  <span class="d-block d-sm-inline-block text-center">
+                    <i class="fa fa-trash"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-header" v-else>
+            {{ comment.id }}
+            ( مدیر ) ({{ comment.date.split('T')[0] }})
+            <div style="float: left">
+              <button
+                class="btn btn-sm btn-success"
+                @click="beforReadyToEdit(comment.id)"
+              >
+                <span class="d-block d-sm-inline-block text-center">
+                  <i class="fa fa-pen"></i>
+                </span>
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                @click="beforReadyToDelete(comment.id)"
+              >
+                <span class="d-block d-sm-inline-block text-center">
+                  <i class="fa fa-trash"></i>
+                </span>
+              </button>
+            </div>
           </div>
           <div class="card-body">{{ comment.text }}</div>
           <div class="card-body">
@@ -86,6 +146,60 @@
         <div class="succussBody">کامنت شما با موفقیت ثبت شد.</div>
       </div>
     </div>
+
+    <!-- modal -->
+    <div class="modal" v-show="showModal2">
+      <div class="dangerModal">
+        <div class="dangerNote" style="background: white; color: black">
+          <div class="border-bottom pb-2">
+            ایا از پاک کردن این کامنت مطمئنید؟
+          </div>
+          <div class="mt-2" style="float: left">
+            <button class="btn btn-sm btn-dark" @click="showModal2 = false">
+              انصراف
+            </button>
+            <button class="btn btn-sm btn-danger" @click="deleteOrder">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- modal2 -->
+    <div class="modal" v-show="showModal3">
+      <div class="succussNote">
+        <div class="succussBody">کامنت شما با موفقیت حذف شد.</div>
+      </div>
+    </div>
+    <!-- modal3 -->
+    <div class="modal" v-show="showModal4">
+      <div class="dangerModal">
+        <div class="dangerNote" style="background: white; color: black">
+          <div class="border-bottom pb-2">
+            <lable for="number">متن کامنت</lable>
+            <input class="w-100" id="number" v-model="formData.text" required />
+            <p class="text-danger" v-show="showError2">
+              پر کردن این فیلد اجباری است.
+            </p>
+          </div>
+          <div class="mt-2" style="float: left">
+            <button class="btn btn-sm btn-dark" @click="showModal4 = false">
+              انصراف
+            </button>
+            <button class="btn btn-sm btn-success" @click="editOrder">
+              ویرایش
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- modal4 -->
+    <div class="modal" v-show="showModal5">
+      <div class="succussNote">
+        <div class="succussBody">کامنت شما با موفقیت ویرایش شد.</div>
+      </div>
+    </div>
+    {{ idToDelete }}
   </div>
 </template>
 
@@ -111,10 +225,29 @@ export default {
     return {
       text: '',
       showModal: false,
+      showModal2: false,
+      showModal3: false,
+      showModal4: false,
+      showModal5: false,
+      idToDelete: null,
+      showError2: false,
+      formData: {
+        text: '',
+      },
     }
   },
 
   methods: {
+    beforReadyToDelete(userId) {
+      const comments = this.comments.filter((o) => o.id === userId)
+      this.showModal2 = true
+      this.idToDelete = comments[0].id
+    },
+    beforReadyToEdit(userId) {
+      const comments = this.comments.filter((o) => o.id === userId)
+      this.showModal4 = true
+      this.idToDelete = comments[0].id
+    },
     async onSubmit() {
       try {
         const res = await this.$axios.$post(`managers/api/comments/create/`, {
@@ -123,15 +256,15 @@ export default {
           role: 'expert',
         })
         console.log(res)
-        const resp = await this.$axios.$post(
-          '/customers/api/notifications/create/',
-          {
-            customer: this.$route.params.customerId,
-            status: 'unread',
-            descriptions: `کامنتی برای ردیف شما ثبت شد`,
-          }
-        )
-        console.log(resp)
+        // const resp = await this.$axios.$post(
+        //   '/customers/api/notifications/create/',
+        //   {
+        //     customer: this.$route.params.customerId,
+        //     status: 'unread',
+        //     descriptions: `کامنتی برای ردیف شما ثبت شد`,
+        //   }
+        // )
+        // console.log(resp)
         this.showModal = true
         setTimeout(() => {
           this.showModal = false
@@ -144,6 +277,42 @@ export default {
         // if (ex.response.status === 400) {
         //   this.$refs.form.setErrors(ex.response.data)
         // }
+      }
+    },
+    async deleteOrder() {
+      try {
+        const res = await this.$axios.$delete(
+          `managers/api/comments/delete/${this.idToDelete}/`
+        )
+        console.log(res)
+        this.showModal2 = false
+        this.showModal3 = true
+        setTimeout(() => {
+          this.showModal3 = false
+          location.reload()
+        }, '3000')
+      } catch (ex) {
+        console.log(ex)
+      }
+    },
+    async editOrder() {
+      try {
+        const res = await this.$axios.$put(
+          `managers/api/comments/update/${this.idToDelete}/`,
+          {
+            text: this.formData.text,
+            row: this.$route.params.rowId,
+          }
+        )
+        console.log(res)
+        this.showModal4 = false
+        this.showModal5 = true
+        setTimeout(() => {
+          this.showModal5 = false
+          location.reload()
+        }, '3000')
+      } catch (ex) {
+        console.log(ex)
       }
     },
   },

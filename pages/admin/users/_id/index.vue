@@ -63,13 +63,16 @@
             >
             <input
               id="email-input"
-              v-model="user[$route.params.id - 1].email"
+              v-model="formData.email"
               type="text"
               class="form-control form-control-sm"
-              value="علی"
+              ref="email"
               :placeholder="user[$route.params.id - 1].email"
             />
             <span class="text-xs text-danger">{{ errors[0] }}</span>
+            <span class="text-xs text-danger" v-show="alert"
+              >این ایمیل قبلا وارد شده است.</span
+            >
           </div>
         </ValidationProvider>
 
@@ -124,7 +127,7 @@
         </ValidationProvider>
 
         <!-- profile -->
-        <ValidationProvider v-slot="{ errors }" vid="image" rules="required">
+        <ValidationProvider v-slot="{ errors }" vid="image">
           <div class="mb-3">
             <label for="name-input" class="form-label">پروفایل کاربر</label>
             <div>
@@ -212,6 +215,7 @@
 export default {
   name: 'AdminPageNewUser',
   layout: 'admin',
+
   async asyncData({ $axios, params }) {
     const user = await $axios.$get(`/managers/api/users/detail/${params.id}/`)
     console.log(user)
@@ -224,6 +228,7 @@ export default {
       showModal: false,
       showModal2: false,
       idToDelete: null,
+      alert: false,
       myData: [],
       formData: {
         role: 'customer',
@@ -240,6 +245,7 @@ export default {
   methods: {
     async onEditUser() {
       try {
+        console.log(this.$refs.fileInput.files[0])
         const bodyFormData = new FormData()
         for (const property in this.formData) {
           bodyFormData.append(property, this.formData[property])
@@ -267,8 +273,13 @@ export default {
           'password',
           this.user[this.$route.params.id - 1].password
         )
-        bodyFormData.append('image', this.$refs.fileInput.files[0])
-
+        if (this.$refs.fileInput.files.length !== 0) {
+          bodyFormData.append('image', this.$refs.fileInput.files[0])
+        } else {
+          this.$refs.fileInput.files =
+            this.user[this.$route.params.id - 1].image
+          bodyFormData.append('image', this.$refs.fileInput.files[0])
+        }
         const res = await this.$axios.$put(
           `managers/api/users/update/${
             this.user[this.$route.params.id - 1].id
@@ -297,15 +308,26 @@ export default {
         }, '3000')
       } catch (ex) {
         console.log(ex)
-        if (ex.response.status === 400) {
-          this.$refs.form.setErrors(ex.response.data)
-        }
+        // if (ex.response.status === 400) {
+        //   this.$refs.form.setErrors(ex.response.data)
+        // }
       }
     },
 
     readyToDelete() {
       this.showModal = true
       this.idToDelete = this.$route.params.id
+    },
+  },
+  watch: {
+    'formData.email'(newVal) {
+      this.user[this.$route.params.id - 1].email = newVal.toLowerCase()
+      this.alert = false
+      for (let i = 0; i < this.user.length; i++) {
+        if (this.user[this.$route.params.id - 1].email === this.user[i].email) {
+          this.alert = true
+        }
+      }
     },
   },
 }

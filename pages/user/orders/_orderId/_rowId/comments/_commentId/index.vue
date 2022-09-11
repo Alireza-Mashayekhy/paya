@@ -29,7 +29,7 @@
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
-      <span>فایل شماره {{ $route.params.commentId }}</span>
+      <span>فایل کامنت {{ $route.params.commentId }}</span>
     </div>
 
     <div>

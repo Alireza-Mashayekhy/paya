@@ -26,7 +26,7 @@
 
     <div class="mb-5">
       <div v-for="comment in comments" :key="comment.id">
-        <div class="d-flex mb-2" v-if="comment.role == 'expert'">
+        <div class="d-flex mb-2" v-if="comment.role == 'customer'">
           <div class="card friend-message">
             <div class="card-header">
               ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
@@ -46,12 +46,12 @@
             ({{ comment.role }}) ({{ comment.date.split('T')[0] }})
           </div>
           <div class="card-body">{{ comment.text }}</div>
-          <div class="card-body">
+          <!-- <div class="card-body">
             <nuxt-link
               :to="`/user/orders/${$route.params.orderId}/${$route.params.rowId}/comments/${comment.id}`"
               >فایل ها</nuxt-link
             >
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

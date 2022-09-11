@@ -22,7 +22,7 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">نام مشتری</th>
-            <th scope="col">کارشناس</th>
+            <!-- <th scope="col">کارشناس</th> -->
             <th scope="col">کشور</th>
             <th scope="col">شرکت</th>
             <th scope="col">عملیات</th>
@@ -32,7 +32,7 @@
           <tr v-for="(user, index) in lastFilteresUsers" :key="user.id">
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ user.first_name + ' ' + user.last_name }}</td>
-            <td>{{ user.expert }}</td>
+            <!-- <td>{{ user.expert }}</td> -->
             <td>{{ user.country }}</td>
             <td>{{ user.company }}</td>
             <td>

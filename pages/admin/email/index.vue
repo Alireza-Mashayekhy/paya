@@ -18,7 +18,8 @@
                 :key="user.id"
                 :value="user.id"
               >
-                {{ user.first_name + ' ' + user.last_name }} - {{ user.email }}
+                {{ user.first_name + ' ' + user.last_name }} -
+                {{ user.email }} - {{ user.country }}
               </option>
             </select>
             <span class="text-xs text-danger">{{ errors[0] }}</span>

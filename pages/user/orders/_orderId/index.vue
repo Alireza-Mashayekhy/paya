@@ -13,7 +13,7 @@
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
-      <span class="head">لیست ردیف ها</span>
+      <span class="head">ردیف های({{ $route.params.orderId }})</span>
     </div>
 
     <div class="table-responsive">

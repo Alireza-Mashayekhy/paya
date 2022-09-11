@@ -6,6 +6,51 @@ body {
   min-height: 100vh;
 }
 
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(39, 59, 36, 0.6);
+}
+.succussNote {
+  background-color: green;
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.succesBody {
+  font-size: 17px;
+  padding: 20px 0px;
+  border-bottom: 1px solid #acacac;
+}
+.dangerModal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(100, 70, 70, 0.6);
+}
+.dangerNote {
+  background-color: rgb(175, 3, 3);
+  height: auto;
+  width: 500px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
 :root {
   /* sidebar */
   --sidebar-bg: #71c562;
@@ -186,7 +231,7 @@ li {
   margin-bottom: 10px;
   text-align: center;
   height: 30px;
-  overflow: hidden;
+  overflow: scroll;
 }
 /* buttons */
 .btn-first {

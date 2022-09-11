@@ -37,14 +37,18 @@
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
-      <span>فایل شماره {{ $route.params.commentId }}</span>
+      <span>فایل کامنت {{ $route.params.commentId }}</span>
     </div>
 
     <div>
       <ul class="list-group mb-3">
-        <li v-for="file in files" :key="file.id" class="list-group-item">
+        <li
+          v-for="(file, index) in files"
+          :key="file.id"
+          class="list-group-item"
+        >
           <div class="d-flex justify-content-between">
-            <a :href="file.file" target="_blank"> فایل {{ file.id + 1 }} </a>
+            <a :href="file.file" target="_blank"> فایل {{ index + 1 }} </a>
             <button class="btn btn-sm btn-danger" @click="onDelete(file.id)">
               <span class="d-block d-sm-inline-block text-center"> حذف </span>
             </button>

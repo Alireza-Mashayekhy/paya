@@ -35,9 +35,14 @@
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
-      <nuxt-link :to="`/admin/orders/${$route.params.customerId}/`" class="head"
-        >لیست سفارشات</nuxt-link
-      >
+      <span v-for="u in users" :key="u.id">
+        <nuxt-link
+          :to="`/admin/orders/${$route.params.customerId}/`"
+          class="head"
+          v-if="u.id == $route.params.customerId"
+          >سفارشات({{ u.first_name }})</nuxt-link
+        >
+      </span>
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
@@ -62,9 +67,36 @@
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ getDate(row.date) }}</td>
             <td class="longTxt">{{ row.title }}</td>
-            <td class="longTxt">{{ row.descriptions }}</td>
+            <td class="longTxt" v-if="windowWidth > 600">
+              {{ row.descriptions }}
+            </td>
+            <td class="longTxt" v-else>
+              <button class="btn btn-info" @click="showModal8 = true">
+                اطلاعات بیشتر
+              </button>
+            </td>
+            <div class="modal" v-show="showModal8">
+              <div class="modal-dialog modal-xl">
+                <div
+                  class="modal-content"
+                  style="background: white; color: black"
+                >
+                  <div class="modal-body pb-2">
+                    {{ row.descriptions }}
+                  </div>
+                  <div class="modal-footer mt-2" style="float: left">
+                    <button
+                      class="btn btn-sm btn-dark"
+                      @click="showModal8 = false"
+                    >
+                      بستن
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <td>{{ row.status }}</td>
-            <td>
+            <td class="d-flex justify-content-center gap-2">
               <nuxt-link
                 :to="`/admin/orders/${$route.params.customerId}/${row.order}/${row.id}/edit`"
                 class="btn btn-sm btn-secondary"
@@ -85,6 +117,14 @@
               >
                 <i class="fa fa-file"></i>
               </nuxt-link>
+              <button
+                class="btn btn-sm btn-danger"
+                @click="beforReadyToDelete(row.id)"
+              >
+                <span class="d-block d-sm-inline-block text-center">
+                  <i class="fa fa-trash"></i>
+                </span>
+              </button>
             </td>
           </tr>
         </tbody>
@@ -189,6 +229,30 @@
         <div class="succussBody">سفارش شما با موفقیت فعال شد.</div>
       </div>
     </div>
+    <!-- modal6 -->
+    <div class="modal" v-show="showModal6">
+      <div class="dangerModal">
+        <div class="dangerNote" style="background: white; color: black">
+          <div class="border-bottom pb-2">
+            ایا از پاک کردن این ردیف مطمئنید؟
+          </div>
+          <div class="mt-2" style="float: left">
+            <button class="btn btn-sm btn-dark" @click="showModal6 = false">
+              انصراف
+            </button>
+            <button class="btn btn-sm btn-danger" @click="deleteOrder">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- modal7 -->
+    <div class="modal" v-show="showModal7">
+      <div class="succussNote">
+        <div class="succussBody">ردیف شما با موفقیت حذف شد.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,6 +286,12 @@ export default {
       showModal3: false,
       showModal4: false,
       showModal5: false,
+      showModal6: false,
+      showModal7: false,
+      showModal8: false,
+      showMore: false,
+      windowWidth: window.innerWidth,
+      idToDelete: null,
       showThisError: false,
       currentRow: {},
       loading: false,
@@ -229,7 +299,40 @@ export default {
     }
   },
 
+  computed: {
+    myUser() {
+      const user = this.users.filter(
+        (o) => o.id === this.$route.params.customerId
+      )
+      return user
+    },
+  },
+
   methods: {
+    beforReadyToDelete(userId) {
+      const rows = this.rows.filter((o) => o.id === userId)
+
+      this.showModal6 = true
+      this.idToDelete = rows[0].id
+    },
+
+    async deleteOrder() {
+      try {
+        const res = await this.$axios.$delete(
+          `managers/api/rows/delete/${this.idToDelete}/`
+        )
+        console.log(res)
+        this.showModal6 = false
+        this.showModal7 = true
+        setTimeout(() => {
+          this.showModal7 = false
+          location.reload()
+        }, '3000')
+      } catch (ex) {
+        console.log(ex)
+      }
+    },
+
     async onEditStatus() {
       try {
         const res = await this.$axios.$patch(
@@ -342,6 +445,16 @@ export default {
 
       modal.show()
     },
+
+    myEventHandler(e) {
+      this.windowWidth = window.innerWidth
+    },
+  },
+  beforeMount() {
+    window.addEventListener('resize', this.myEventHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.myEventHandler)
   },
 }
 </script>

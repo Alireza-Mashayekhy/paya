@@ -3,6 +3,25 @@
     <div class="headline">افزودن کاربر</div>
     <ValidationObserver ref="form" v-slot="{ handleSubmit }">
       <form action="#" @submit.prevent="handleSubmit(onSubmit)">
+        <!-- role -->
+        <ValidationProvider v-slot="{ errors }" vid="role" rules="required">
+          <div class="mb-3">
+            <label for="role-input" class="form-label"
+              >دسترسی <span class="text-danger">*</span></label
+            >
+            <select
+              id="role-input"
+              v-model="formData.role"
+              class="form-select form-select-sm"
+            >
+              <option value="customer">مشتری</option>
+              <option value="expert">کارشناس</option>
+              <option value="manager">مدیر</option>
+            </select>
+            <span class="text-xs text-danger">{{ errors[0] }}</span>
+          </div>
+        </ValidationProvider>
+
         <!-- first name -->
         <ValidationProvider
           v-slot="{ errors }"
@@ -67,7 +86,7 @@
         </ValidationProvider>
 
         <!-- country -->
-        <ValidationProvider v-slot="{ errors }" vid="country">
+        <ValidationProvider v-slot="{ errors }" vid="country" v-if="custom">
           <div class="mb-3">
             <label for="country-input" class="form-label"
               >کشور <span class="text-danger">*</span></label
@@ -94,7 +113,7 @@
             <input
               id="mobile-input"
               v-model="formData.phone"
-              type="number"
+              type="text"
               class="form-control form-control-sm"
             />
             <span class="text-xs text-danger">{{ errors[0] }}</span>
@@ -135,25 +154,6 @@
           </div>
         </ValidationProvider>
 
-        <!-- role -->
-        <ValidationProvider v-slot="{ errors }" vid="role" rules="required">
-          <div class="mb-3">
-            <label for="role-input" class="form-label"
-              >دسترسی <span class="text-danger">*</span></label
-            >
-            <select
-              id="role-input"
-              v-model="formData.role"
-              class="form-select form-select-sm"
-            >
-              <option value="customer">مشتری</option>
-              <option value="expert">کارشناس</option>
-              <option value="manager">مدیر</option>
-            </select>
-            <span class="text-xs text-danger">{{ errors[0] }}</span>
-          </div>
-        </ValidationProvider>
-
         <!-- profile -->
         <ValidationProvider vid="image">
           <div class="mb-3">
@@ -186,6 +186,12 @@
         <div class="succussBody">کاربر شما با موفقیت ساخته شد.</div>
       </div>
     </div>
+
+    <div class="modal" v-show="nameError">
+      <div class="dangerModal">
+        <div class="dangerNote">نام وارد شده قبلا استفاده شده است.</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -203,8 +209,10 @@ export default {
     return {
       showModal: false,
       showError: false,
+      nameError: false,
+      condition: false,
       alert: false,
-      custom: false,
+      custom: true,
       file: null,
       formData: {
         role: 'customer',
@@ -232,9 +240,9 @@ export default {
     },
     'formData.role'() {
       if (this.formData.role === 'customer') {
-        this.custom = false
-      } else {
         this.custom = true
+      } else {
+        this.custom = false
       }
     },
   },
@@ -252,31 +260,43 @@ export default {
       this.showError = false
       if (this.alert === false) {
         if (this.$refs.fileInput.files.length !== 0) {
-          try {
-            const res = await this.$axios.post(
-              `managers/api/users/create/`,
-              bodyFormData,
-              {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
+          this.users.forEach((user) => {
+            if (user.first_name === this.formData.first_name) {
+              this.nameError = true
+              this.condition = true
+              setTimeout(() => {
+                this.nameError = false
+              }, '3000')
+            }
+          })
+          if (this.condition === false) {
+            try {
+              const res = await this.$axios.post(
+                `managers/api/users/create/`,
+                bodyFormData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                  },
+                }
+              )
+              console.log(res)
+              this.showModal = true
+              setTimeout(() => {
+                this.showModal = false
+                this.$router.push('/admin/users')
+              }, '3000')
+            } catch (ex) {
+              if (ex.response.status === 400) {
+                this.$refs.form.setErrors(ex.response.data)
               }
-            )
-            console.log(res)
-            this.showModal = true
-            setTimeout(() => {
-              this.showModal = false
-              this.$router.push('/admin/users')
-            }, '3000')
-          } catch (ex) {
-            if (ex.response.status === 400) {
-              this.$refs.form.setErrors(ex.response.data)
             }
           }
         } else {
           this.showError = true
         }
       }
+      this.condition = false
     },
   },
 }

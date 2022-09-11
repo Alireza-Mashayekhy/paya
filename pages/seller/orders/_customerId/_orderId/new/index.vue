@@ -75,7 +75,7 @@
 <script>
 export default {
   name: 'AdminPageConnectUserSeller',
-  layout: 'admin',
+  layout: 'seller',
   data() {
     return {
       showModal: false,

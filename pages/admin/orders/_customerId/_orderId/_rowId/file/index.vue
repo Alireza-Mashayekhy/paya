@@ -98,8 +98,9 @@ export default {
   },
   methods: {
     async onSubmit() {
+      console.log(this.$refs.fileInput.files)
       const bodyFormData = new FormData()
-      bodyFormData.append('file', this.$refs.fileInput.files[0])
+      bodyFormData.append('file', this.$refs.fileInput.files)
       bodyFormData.append('row', +this.$route.params.rowId)
 
       try {
@@ -113,15 +114,15 @@ export default {
           }
         )
         console.log(res)
-        const resp = await this.$axios.$post(
-          '/customers/api/notifications/create/',
-          {
-            customer: this.$route.params.customerId,
-            status: 'unread',
-            descriptions: `فایلی برای ردیف شما ثبت شد`,
-          }
-        )
-        console.log(resp)
+        // const resp = await this.$axios.$post(
+        //   '/customers/api/notifications/create/',
+        //   {
+        //     customer: this.$route.params.customerId,
+        //     status: 'unread',
+        //     descriptions: `فایلی برای ردیف شما ثبت شد`,
+        //   }
+        // )
+        // console.log(resp)
         this.showModal = true
         setTimeout(() => {
           this.showModal = false

@@ -15,16 +15,21 @@
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
-      <nuxt-link :to="`/admin/orders/${$route.params.customerId}/`" class="head"
-        >لیست سفارشات</nuxt-link
-      >
+      <span v-for="u in users" :key="u.id">
+        <nuxt-link
+          :to="`/admin/orders/${$route.params.customerId}/`"
+          class="head"
+          v-if="u.id == $route.params.customerId"
+          >سفارشات({{ u.first_name }})</nuxt-link
+        >
+      </span>
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
       <span> </span>
       <nuxt-link
         :to="`/admin/orders/${$route.params.customerId}/${$route.params.orderId}`"
         class="head"
-        >لیست ردیف ها</nuxt-link
+        >ردیف های({{ $route.params.orderId }})</nuxt-link
       >
       <span> </span>
       <i class="fa fa-angle-left" aria-hidden="true"></i>
@@ -34,60 +39,56 @@
 
     <div v-for="data in formData" :key="data.id">
       <div v-if="data.id == $route.params.rowId">
-        <ValidationObserver ref="form">
-          <form action="#" @submit.prevent="onSubmit">
-            <!-- title -->
-            <ValidationProvider v-slot="{ errors }" vid="title">
-              <div class="mb-3">
-                <label for="short-description-input" class="form-label"
-                  >شرح خدمات</label
-                >
-                <input
-                  id="short-description-input"
-                  v-model="myData.title"
-                  type="text"
-                  class="form-control form-control-sm"
-                  :placeholder="data.title"
-                />
-                <span class="text-xs text-danger">{{ errors[0] }}</span>
-              </div>
-            </ValidationProvider>
+        <!-- title -->
+        <ValidationProvider v-slot="{ errors }" vid="title">
+          <div class="mb-3">
+            <label for="short-description-input" class="form-label"
+              >شرح خدمات</label
+            >
+            <input
+              id="short-description-input"
+              v-model="data.title"
+              type="text"
+              class="form-control form-control-sm"
+              :placeholder="data.title"
+            />
+            <span class="text-xs text-danger">{{ errors[0] }}</span>
+          </div>
+        </ValidationProvider>
 
-            <!-- descriptions -->
-            <ValidationProvider v-slot="{ errors }" vid="descriptions">
-              <div class="mb-3">
-                <label for="description-input" class="form-label"
-                  >توضیحات تکمیلی</label
-                >
-                <textarea
-                  id="description-input"
-                  v-model="myData.descriptions"
-                  class="message-box form-control"
-                  :placeholder="data.descriptions"
-                ></textarea>
-                <span class="text-xs text-danger">{{ errors[0] }}</span>
-              </div>
-            </ValidationProvider>
-            <ValidationProvider v-slot="{ errors }" vid="status">
-              <div class="mb-3">
-                <label for="description-input" class="form-label">وضعیت</label>
-                <input
-                  id="description-input"
-                  v-model="myData.status"
-                  class="form-control form-control-sm"
-                  :placeholder="data.status"
-                />
-                <span class="text-xs text-danger">{{ errors[0] }}</span>
-              </div>
-            </ValidationProvider>
+        <!-- descriptions -->
+        <ValidationProvider v-slot="{ errors }" vid="descriptions">
+          <div class="mb-3">
+            <label for="description-input" class="form-label"
+              >توضیحات تکمیلی</label
+            >
+            <textarea
+              id="description-input"
+              v-model="data.descriptions"
+              class="message-box form-control"
+              :placeholder="data.descriptions"
+            ></textarea>
+            <span class="text-xs text-danger">{{ errors[0] }}</span>
+          </div>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors }" vid="status">
+          <div class="mb-3">
+            <label for="description-input" class="form-label">وضعیت</label>
+            <input
+              id="description-input"
+              v-model="data.status"
+              class="form-control form-control-sm"
+              :placeholder="data.status"
+            />
+            <span class="text-xs text-danger">{{ errors[0] }}</span>
+          </div>
+        </ValidationProvider>
 
-            <button class="btn btn-sm btn-first">
-              <span class="d-block d-sm-inline-block text-center">
-                <i>ویرایش</i>
-              </span>
-            </button>
-          </form>
-        </ValidationObserver>
+        <button class="btn btn-sm btn-first" @click="check(data.id)">
+          <span class="d-block d-sm-inline-block text-center">
+            <i>ویرایش</i>
+          </span>
+        </button>
       </div>
     </div>
 
@@ -106,18 +107,17 @@ export default {
   data() {
     return {
       showModal: false,
-      myData: {
-        title: '',
-        descriptions: '',
-        status: '',
-        order: this.$route.params.orderId,
-      },
+      myData: null,
     }
   },
   async asyncData({ $axios, params }) {
     const row = await $axios.$get(`/managers/api/rows/detail/${params.rowId}/`)
+    const users = await $axios.$get(
+      `managers/api/users/detail/${params.customerId}/`
+    )
     return {
       formData: row,
+      users,
     }
   },
   methods: {
@@ -150,6 +150,12 @@ export default {
           this.$refs.form.setErrors(ex.response.data)
         }
       }
+    },
+
+    check(id) {
+      const row = this.formData.filter((o) => o.id === id)
+      this.myData = row[0]
+      this.onSubmit()
     },
   },
 }

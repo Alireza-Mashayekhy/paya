@@ -35,8 +35,8 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">شماره سفارش</th>
-                <th scope="col">تاریخ</th>
-                <th scope="col">وضعیت</th>
+                <th scope="col">تاریخ شروع</th>
+                <th scope="col">کارشناس</th>
                 <th scope="col">عملیات</th>
               </tr>
             </thead>
@@ -45,7 +45,7 @@
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ order.number }}</td>
                 <td>{{ getDate(order.date) }}</td>
-                <td>{{ order.status }}</td>
+                <td>{{ order.expert }}</td>
                 <td>
                   <nuxt-link
                     :to="`/user/orders/${order.id}`"
@@ -69,9 +69,9 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">شماره سفارش</th>
-                <th scope="col">تاریخ</th>
+                <th scope="col">تاریخ شروع</th>
+                <th scope="col">تاریخ پایان</th>
                 <th scope="col">کارشناس</th>
-                <th scope="col">وضعیت</th>
                 <th scope="col">عملیات</th>
               </tr>
             </thead>
@@ -79,6 +79,7 @@
               <tr v-for="(order, index) in closeOrders" :key="order.id">
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ order.number }}</td>
+                <td>{{ getDate(order.date) }}</td>
                 <td>{{ getDate(order.date) }}</td>
                 <td>{{ order.expert }}</td>
                 <td>{{ order.status }}</td>

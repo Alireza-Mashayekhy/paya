@@ -9,16 +9,23 @@
       >
     </div>
 
-    <div class="head">{{ order.title }}</div>
-
-    <div>
-      <ul class="list-group mb-3">
-        <li class="list-group-item">
-          <div class="d-flex justify-content-between">
-            <a :href="files[0].file" target="_blank"> فاکتور </a>
-          </div>
-        </li>
-      </ul>
+    <div class="head">
+      <nuxt-link to="/admin/orders" class="head">لیست مشتریان</nuxt-link>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span v-for="u in users" :key="u.id">
+        <nuxt-link
+          :to="`/admin/orders/${$route.params.customerId}/`"
+          class="head"
+          v-if="u.id == $route.params.customerId"
+          >سفارشات({{ u.first_name }})</nuxt-link
+        >
+      </span>
+      <span> </span>
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+      <span> </span>
+      <span>{{ order.title }}</span>
     </div>
   </div>
 </template>
@@ -34,9 +41,13 @@ export default {
     const order = await $axios.$get(
       `/managers/api/rows/detail/${params.orderId}/`
     )
+    const users = await $axios.$get(
+      `managers/api/users/detail/${params.customerId}/`
+    )
     return {
       files,
       order: order[0],
+      users,
     }
   },
   methods: {

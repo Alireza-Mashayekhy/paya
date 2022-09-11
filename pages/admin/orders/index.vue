@@ -42,14 +42,14 @@
                   <i class="fa fa-suitcase"></i>
                 </span>
               </nuxt-link>
-              <button
+              <!-- <button
                 class="btn btn-sm btn-danger"
                 @click="beforReadyToDelete(user.id)"
               >
                 <span class="d-block d-sm-inline-block text-center">
                   <i class="fa fa-trash"></i>
                 </span>
-              </button>
+              </button> -->
             </td>
           </tr>
         </tbody>
